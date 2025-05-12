@@ -1,9 +1,7 @@
 # Ex-6-IMPLEMENTATION-OF-THE-BACK-END-OF-THE-COMPILER-
 IMPLEMENTATION OF THE BACK END OF THE COMPILER 
-# NAME : MANOGARAN S
-# REG NO : 212223240081
-# Date :
-# Aim :
+# DATE :09.05.2025
+# AIM:
 To write a program to implement the back end of the compiler.
 # ALGORITHM
 1. Start the program.
@@ -13,53 +11,75 @@ To write a program to implement the back end of the compiler.
 5. Target code for the given statement is produced.
 6. Stop the program.
 # PROGRAM
+exp6.c
 ```
-#include <stdio.h> 
-#include <ctype.h> 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 int main() {
-int i = 2, j = 0, k = 2, k1 = 0; char ip[10], kk[10];
-FILE *fp;
+    char line[100], var[10], op1[10], op2[10], res[10], op;
+    char filename[50];
+    FILE *fp;
+    int reg = 0;
 
-printf("Enter the filename of the intermediate code: "); scanf("%s", kk);
+    printf("Enter the filename of the intermediate code: ");
+    scanf("%s", filename);
 
-fp = fopen(kk, "r"); if (fp == NULL) {
-printf("\nError in opening the file\n"); return 1;
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Error: Could not open file.\n");
+        return 1;
+    }
+
+    printf("\nIntermediate Code:\n\n");
+
+    while (fgets(line, sizeof(line), fp)) {
+        printf("\t\t%s", line);
+    }
+
+    rewind(fp);
+
+    printf("\n\n\tStatement\t\tTarget Code\n\n");
+
+    while (fgets(line, sizeof(line), fp)) {
+        // Remove newline if exists
+        line[strcspn(line, "\n")] = 0;
+
+        // Example format: t1 = a + b
+        if (sscanf(line, "%s = %s %c %s", res, op1, &op, op2) == 4) {
+            printf("\t%s\t\tMOV %s, R%d\n", line, op2, reg);
+            printf("\t\t\t\t");
+
+            if (op == '+')
+                printf("ADD ");
+            else if (op == '-')
+                printf("SUB ");
+            else if (op == '*')
+                printf("MUL ");
+            else if (op == '/')
+                printf("DIV ");
+            else
+                printf("OP? ");
+
+            printf("%s, R%d\n\n", op1, reg);
+            reg++;
+        }
+    }
+
+    fclose(fp);
+    return 0;
 }
-printf("\nStatement\tTarget Code\n\n"); while (fscanf(fp, "%s", ip) != EOF) {
-printf("%s\tMOV %c,R%d SUB ", ip, ip[i + k], j);
 
-if (ip[i + 1] == '+')
-printf("ADD "); else
-printf("SUB ");
-
-if (islower(ip[i])) printf("%c,R%d\n", ip[i + k1], j);
-else
-printf("%c,%c\n", ip[i], ip[i + 2]);
-
-j++;
-k1 = 2;
-k = 0;
-}
-
-fclose(fp);
-
-return 0;
-}
 ```
-k.txt:
-
+exp6.txt
 ```
-X=a-b 
-Y=a-c 
-Z=a+b 
-C=a-b 
-C=a-b
-
+t1 = a + b
+t2 = t1 - c
 ```
 # OUTPUT
-![384797723-763cf8ef-be50-4e72-a886-f860aeacc984](https://github.com/user-attachments/assets/ec11a92b-f3b6-40be-abd9-71e54f4b46b0)
+![Screenshot 2025-05-09 104620](https://github.com/user-attachments/assets/6c861e84-c3ea-42fd-8253-8f816eb9ebe2)
 
 # Result
 The back end of the compiler is implemented successfully, and the output is verified.
